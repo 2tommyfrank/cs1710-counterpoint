@@ -62,6 +62,25 @@ pred validClimax {
     }
 }
 
+fun mod[a, p: Int]: Int {
+    let rem = remainder[a, p] {
+        rem >= 0 implies rem else add[p, remainder]
+    }
+}
+
+pred samePitch[pitch1, pitch2: Int] {
+    mod[subtract[mod[pitch1, 7], mod[pitch2, 7]], 7] = 0
+}
+
+pred noTritones {
+    let F = subtract[3, mode], B = subtract[6, mode] {
+        no i: Int | let j = add[i, 1] {
+            (samePitch[Cf.degrees[i], F] and samePitch[Cf.degrees[j], B]) or
+            (samePitch[Cf.degrees[i], B] and samePitch[Cf.degrees[j], F])
+        }
+    }
+}
+
 pred cantusFirmus {
     wellformed
     validMode
@@ -70,6 +89,7 @@ pred cantusFirmus {
     validRange
     penultimateDescent
     validClimax
+    noTritones
 }
 
 run { cantusFirmus } for 5 Int

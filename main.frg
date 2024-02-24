@@ -2,10 +2,6 @@
 open "cantus_firmus.frg"
 open "counterpoint.frg"
 
-sig Line {
-    notes: pfunc Int -> Int
-}
-
 pred cantusFirmus[line: Line] {
 }
 

@@ -64,7 +64,7 @@ pred validClimax {
 
 fun mod[a, p: Int]: Int {
     let rem = remainder[a, p] {
-        rem >= 0 implies rem else add[p, remainder]
+        rem >= 0 implies rem else add[p, rem]
     }
 }
 
@@ -81,6 +81,15 @@ pred noTritones {
     }
 }
 
+pred badInterval {
+    //there is a seventh
+    some i : Int | {
+        intervalOf[Cf.degrees[i], Cf.degrees[add[i, 1]]] = 7 or
+        intervalOf[Cf.degrees[i], Cf.degrees[add[i, 1]]] = 1
+    }
+
+}
+
 pred cantusFirmus {
     wellformed
     validMode
@@ -90,6 +99,7 @@ pred cantusFirmus {
     penultimateDescent
     validClimax
     noTritones
+    not badInterval
 }
 
 run { cantusFirmus } for 5 Int

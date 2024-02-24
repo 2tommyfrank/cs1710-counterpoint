@@ -6,6 +6,10 @@ one sig Cf {
     degrees: pfunc Int -> Int
 }
 
+fun lastMeasure: Int {
+    max[{ i: Int | some Cf.degrees[i] }]
+}
+
 fun intervalOf[i, j : Int] : Int {
     add[abs[subtract[j, i]], 1]
 }
@@ -28,13 +32,8 @@ pred validMode {
 }
 
 pred validLength {
-    // assuming wellformed, there are notes at indices 0-7
-    some Cf.degrees[7]
-
-    //cannot be longer than 16 notes
-    all i : Int | i > 15 implies {
-        no Cf.degrees[i]
-    }
+    lastMeasure >= 7
+    lastMeasure <= 15
 }
 
 //starts and ends on modal final
@@ -42,8 +41,6 @@ pred validStartEnd {
     seqFirst[Cf.degrees] = 0
     seqLast[Cf.degrees] = 0
 }
-
-
 
 pred validRange {
     all disj i, j: Int {
@@ -54,12 +51,25 @@ pred validRange {
     }   
 }
 
+pred penultimateDescent {
+    Cf.degrees[subtract[lastMeasure, 1]] = 1
+}
+
+pred validClimax {
+    some i: Int | all j: Int | i != j implies {
+        Cf.degrees[i] > Cf.degrees[j]
+        Cf.degrees[i] != 6 // no seventh climax
+    }
+}
+
 pred cantusFirmus {
     wellformed
     validMode
     validLength
     validStartEnd
     validRange
-
+    penultimateDescent
+    validClimax
 }
+
 run { cantusFirmus } for 5 Int

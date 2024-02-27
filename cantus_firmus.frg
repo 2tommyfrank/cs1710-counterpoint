@@ -81,7 +81,7 @@ fun mod[a, p: Int]: Int {
 
 // Tommy
 pred tritone[pitch1, pitch2: Int] {
-    let F = subtract[3, Cf.mode], B = subtract[6, Cf.mode] {
+    let F = mod[subtract[3, Cf.mode], 7], B = mod[subtract[6, Cf.mode], 7] {
         (mod[pitch1, 7] = F and mod[pitch2, 7] = B) or
         (mod[pitch1, 7] = B and mod[pitch2, 7] = F)
     }

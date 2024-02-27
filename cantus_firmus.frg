@@ -85,7 +85,7 @@ pred samePitch[pitch1, pitch2: Int] {
 
 // Tommy
 pred noTritones {
-    let F = subtract[3, mode], B = subtract[6, mode] {
+    let F = subtract[3, Cf.mode], B = subtract[6, Cf.mode] {
         no i: Int | let j = add[i, 1] {
             (samePitch[Cf.degrees[i], F] and samePitch[Cf.degrees[j], B]) or
             (samePitch[Cf.degrees[i], B] and samePitch[Cf.degrees[j], F])
@@ -96,10 +96,11 @@ pred noTritones {
 // Ethan
 pred noBadIntervals {
     all i : Int | let j = add[i, 1] {
-        intervalOf[Cf.degrees[i], Cf.degrees[j]] != 1
-        intervalOf[Cf.degrees[i], Cf.degrees[j]] != 7
+        (i >= 0 and i < lastMeasure) implies {
+            intervalOf[Cf.degrees[i], Cf.degrees[j]] != 1
+            intervalOf[Cf.degrees[i], Cf.degrees[j]] != 7
+        }
     }
-
 }
 
 // test this works with even and odd measure numbers
@@ -118,6 +119,13 @@ pred noArpeggios {
     }
 }
 
+pred noCircling {
+    no i: Int | let j = add[i, 2], k = add[i, 4] {
+        Cf.degrees[i] = Cf.degrees[j]
+        Cf.degrees[j] = Cf.degrees[k]
+    }
+}
+
 pred cantusFirmus {
     wellformed
     validMode
@@ -129,7 +137,8 @@ pred cantusFirmus {
     noTritones
     noBadIntervals
     mostlySteps
-    noArpeggios
+    // noArpeggios
+    // noCircling
 }
 
 run { cantusFirmus } for 5 Int

@@ -80,17 +80,28 @@ fun mod[a, p: Int]: Int {
 }
 
 // Tommy
-pred samePitch[pitch1, pitch2: Int] {
-    mod[subtract[mod[pitch1, 7], mod[pitch2, 7]], 7] = 0
+pred tritone[pitch1, pitch2: Int] {
+    let F = subtract[3, Cf.mode], B = subtract[6, Cf.mode] {
+        (mod[pitch1, 7] = F and mod[pitch2, 7] = B) or
+        (mod[pitch1, 7] = B and mod[pitch2, 7] = F)
+    }
 }
 
 // Tommy
 pred noTritones {
-    let F = subtract[3, Cf.mode], B = subtract[6, Cf.mode] {
-        no i: Int | let j = add[i, 1] {
-            (samePitch[Cf.degrees[i], F] and samePitch[Cf.degrees[j], B]) or
-            (samePitch[Cf.degrees[i], B] and samePitch[Cf.degrees[j], F])
-        }
+    no disj i, j: Int | {
+        0 <= i
+        i < j
+        j <= lastMeasure
+        tritone[Cf.degrees[i], Cf.degrees[j]]
+
+        (all m: Int | (i <= m and m < j) implies {
+            Cf.degrees[m] < Cf.degrees[add[m, 1]]
+        })
+        or
+        (all m: Int | (i <= m and m < j) implies {
+            Cf.degrees[m] > Cf.degrees[add[m, 1]]
+        })
     }
 }
 
@@ -114,9 +125,6 @@ pred mostlySteps {
         numJumps < divide[lastMeasure, 2]
         numJumps > 0
     }
-
-    //at least one skip
-    
 }
 
 pred noArpeggios {
@@ -143,7 +151,6 @@ pred noTripleJump { // this is not track and field
         intervalOf[Cf.degrees[j], Cf.degrees[k]] > 2
         intervalOf[Cf.degrees[k], Cf.degrees[m]] > 2
     }
-    
 }
 
 pred cantusFirmus {

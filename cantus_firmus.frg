@@ -94,13 +94,28 @@ pred noTritones {
 }
 
 // Ethan
-pred badInterval {
-    //there is a seventh
-    some i : Int | {
-        intervalOf[Cf.degrees[i], Cf.degrees[add[i, 1]]] = 7 or
-        intervalOf[Cf.degrees[i], Cf.degrees[add[i, 1]]] = 1
+pred noBadIntervals {
+    all i : Int | let j = add[i, 1] {
+        intervalOf[Cf.degrees[i], Cf.degrees[j]] != 1
+        intervalOf[Cf.degrees[i], Cf.degrees[j]] != 7
     }
 
+}
+
+// test this works with even and odd measure numbers
+pred mostlySteps {
+    #{ i: Int | let j = add[i, 1] {
+        intervalOf[Cf.degrees[i], Cf.degrees[j]] = 2 // step
+    }} > divide[lastMeasure, 2]
+}
+
+pred noArpeggios {
+    no i: Int | let j = add[i, 1], k = add[i, 2] {
+        sign[subtract[Cf.degrees[i], Cf.degrees[j]]]
+        = sign[subtract[Cf.degrees[j], Cf.degrees[k]]]
+        intervalOf[Cf.degrees[i], Cf.degrees[j]] > 1
+        intervalOf[Cf.degrees[j], Cf.degrees[k]] > 1
+    }
 }
 
 pred cantusFirmus {
@@ -112,7 +127,9 @@ pred cantusFirmus {
     penultimateDescent
     validClimax
     noTritones
-    not badInterval
+    noBadIntervals
+    mostlySteps
+    noArpeggios
 }
 
 run { cantusFirmus } for 5 Int

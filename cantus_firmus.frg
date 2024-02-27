@@ -68,6 +68,7 @@ pred validClimax {
     some i: Int | all j: Int | i != j implies {
         Cf.degrees[i] > Cf.degrees[j]
         Cf.degrees[i] != 6 // no seventh climax
+        // Cf.degrees[i] > 1
     }
 }
 
@@ -105,25 +106,44 @@ pred noBadIntervals {
 
 // test this works with even and odd measure numbers
 pred mostlySteps {
-    #{ i: Int | let j = add[i, 1] {
-        intervalOf[Cf.degrees[i], Cf.degrees[j]] = 2 // step
-    }} > divide[lastMeasure, 2]
+    let numJumps = #{ i: Int | let j = add[i, 1] {
+        i >= 0
+        i < lastMeasure
+        intervalOf[Cf.degrees[i], Cf.degrees[j]] > 2
+    }} {
+        numJumps < divide[lastMeasure, 2]
+        numJumps > 0
+    }
+
+    //at least one skip
+    
 }
 
 pred noArpeggios {
     no i: Int | let j = add[i, 1], k = add[i, 2] {
         sign[subtract[Cf.degrees[i], Cf.degrees[j]]]
         = sign[subtract[Cf.degrees[j], Cf.degrees[k]]]
-        intervalOf[Cf.degrees[i], Cf.degrees[j]] > 1
-        intervalOf[Cf.degrees[j], Cf.degrees[k]] > 1
+        intervalOf[Cf.degrees[i], Cf.degrees[j]] > 2
+        intervalOf[Cf.degrees[j], Cf.degrees[k]] > 2
     }
 }
 
 pred noCircling {
     no i: Int | let j = add[i, 2], k = add[i, 4] {
+        i >= 0
+        i <= subtract[lastMeasure, 4]
         Cf.degrees[i] = Cf.degrees[j]
         Cf.degrees[j] = Cf.degrees[k]
     }
+}
+
+pred noTripleJump { // this is not track and field
+    no i: Int | let j = add[i, 1], k = add[i, 2], m = add[i, 3] {
+        intervalOf[Cf.degrees[i], Cf.degrees[j]] > 2
+        intervalOf[Cf.degrees[j], Cf.degrees[k]] > 2
+        intervalOf[Cf.degrees[k], Cf.degrees[m]] > 2
+    }
+    
 }
 
 pred cantusFirmus {
@@ -137,8 +157,9 @@ pred cantusFirmus {
     noTritones
     noBadIntervals
     mostlySteps
-    // noArpeggios
-    // noCircling
+    noArpeggios
+    noCircling
+    noTripleJump
 }
 
 run { cantusFirmus } for 5 Int

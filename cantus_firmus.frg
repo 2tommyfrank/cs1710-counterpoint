@@ -116,6 +116,7 @@ pred noBadIntervals {
 }
 
 // test this works with even and odd measure numbers
+// Tommy
 pred mostlySteps {
     let numJumps = #{ i: Int | let j = add[i, 1] {
         i >= 0
@@ -127,6 +128,7 @@ pred mostlySteps {
     }
 }
 
+// Ethan
 pred noArpeggios {
     no i: Int | let j = add[i, 1], k = add[i, 2] {
         sign[subtract[Cf.degrees[i], Cf.degrees[j]]]
@@ -136,6 +138,7 @@ pred noArpeggios {
     }
 }
 
+// Tommy
 pred noCircling {
     no i: Int | let j = add[i, 2], k = add[i, 4] {
         i >= 0
@@ -145,6 +148,7 @@ pred noCircling {
     }
 }
 
+// Ethan
 pred noTripleJump { // this is not track and field
     no i: Int | let j = add[i, 1], k = add[i, 2], m = add[i, 3] {
         intervalOf[Cf.degrees[i], Cf.degrees[j]] > 2

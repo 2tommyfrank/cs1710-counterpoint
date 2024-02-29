@@ -1,6 +1,9 @@
 #lang forge/bsl
-
 option run_sterling "cf_visualizer.js"
+
+/******************************************************************************
+    Signatures
+******************************************************************************/
 
 // A cantus firmus is a short musical line with one note per measure and in
 // a particular mode.
@@ -13,6 +16,9 @@ one sig Cf {
     degrees: pfunc Int -> Int
 }
 
+/******************************************************************************
+    Functions
+******************************************************************************/
 
 // Calculates the last measure of a CF; useful for bounding length.
 fun lastMeasure: Int {
@@ -32,6 +38,9 @@ fun mod[a, p: Int]: Int {
     }
 }
 
+/******************************************************************************
+    Constraints
+******************************************************************************/
 
 // Make sure the mode is meaningful and that Cf.degrees is a sequence of notes.
 pred wellformed {
@@ -162,6 +171,9 @@ pred cantusFirmusLite {
     noArpeggios
 }
 
+/******************************************************************************
+    Extra constraints
+******************************************************************************/
 
 // The CF should not circle around the same note for too long, as this is
 // too repetitive.
@@ -192,6 +204,9 @@ pred cantusFirmus {
     noTripleJump
 }
 
+/******************************************************************************
+    Run statements
+******************************************************************************/
 
 // Finds an example of a cantus firmus
 run { cantusFirmus } for 5 Int

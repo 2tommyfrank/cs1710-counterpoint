@@ -4,10 +4,18 @@ open "cantus_firmus.frg"
 // warning: may take a long time to run all tests
 // perhaps run the test suites individually
 
+/******************************************************************************
+    Integration tests
+******************************************************************************/
+
 test expect { // cantusFirmus
     // ensures that all sub-predicates are satisfiable as well
     cfSat : { cantusFirmus } for 5 Int is sat
 }
+
+/******************************************************************************
+    Function tests
+******************************************************************************/
 
 test expect { // lastMeasure
     lastMeasurePresent : {
@@ -26,6 +34,16 @@ test expect { // intervalOf
     octave : { intervalOf[7, 0] = 8 } for 5 Int is sat
     doubleOctave : { intervalOf[7, -7] = 15 } for 5 Int is sat
 }
+
+test expect { // mod
+    mod_5_7 : { mod[5, 7] = 5 } for 5 Int is sat
+    mod_12_5 : { mod[12, 5] = 2 } for 5 Int is sat
+    negative : { mod[-6, 5] = 4 } for 5 Int is sat
+}
+
+/******************************************************************************
+    Constraint tests
+******************************************************************************/
 
 test expect { // wellformed
     wellformedExample : {
@@ -146,12 +164,6 @@ test expect { // validClimax
             Cf.degrees[i] < 5
         }
     } for 5 Int is unsat
-}
-
-test expect { // mod
-    mod_5_7 : { mod[5, 7] = 5 } for 5 Int is sat
-    mod_12_5 : { mod[12, 5] = 2 } for 5 Int is sat
-    negative : { mod[-6, 5] = 4 } for 5 Int is sat
 }
 
 test expect { // tritone

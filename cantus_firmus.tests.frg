@@ -3,12 +3,10 @@ open "cantus_firmus.frg"
 
 test expect { // lastMeasure
     lastMeasurePresent : {
-        some Cf.degrees[15]
-        lastMeasure = 15
+        some Cf.degrees[15] implies lastMeasure = 15
     } for 5 Int is theorem
     lastMeasureAbsent : {
-        no Cf.degrees[15]
-        lastMeasure < 15
+        no Cf.degrees[15] implies lastMeasure < 15
     } for 5 Int is theorem
 }
 
@@ -81,71 +79,72 @@ test expect { // tritone
 }
 
 test expect { // noTritones
-    noTritonesExample : {
-        Cf.mode = 0
-        Cf.degrees = // C F E B A D C
-        0 -> 0 + 1 -> 3 + 2 -> 2 + 3 -> 6 + 4 -> 5 + 5 -> 1 + 6 -> 0
-        noTritones
-    } for 5 Int is sat
     immediateTritone : {
         Cf.mode = 0
+        wellformed
         some i: Int | Cf.degrees[i] = 3 and Cf.degrees[add[i, 1]] = 6
         noTritones
     } for 5 Int is unsat
     tritoneInSequence : {
         Cf.mode = 0
+        wellformed
         Cf.degrees[2] = 6 and Cf.degrees[3] = 5 and Cf.degrees[4] = 3
         noTritones
     } for 5 Int is unsat
-    noFourthsOrFifths : {
-        no i, j: Int | let inter = intervalOf[Cf.degrees[i], Cf.degrees[j]] {
-            inter = 4 or inter = 5
+    tritonesRequireB : {
+        let B = mod[subtract[6, Cf.mode], 7] {
+            (no i: Int | mod[Cf.degrees[i], 7] = B) implies noTritones
         }
-        noTritones
     } for 5 Int is theorem
 }
-
-test expect { // mostlySteps
-    evenMeasureExample : {
-        Cf.degrees = // in Ionian: C F E D G A D C
-        0 -> 0 + 1 -> 3 + 2 -> 2 + 3 -> 1 + 4 -> 4 + 5 -> 5 + 6 -> 1 + 7 -> 0
-        mostlySteps
-    } for 5 Int is sat
-    oddMeasureExample : {
-        Cf.degrees = // in Ionian: C B F E D G A D C
-        0 -> 0 + 1 -> -1 + 2 -> 3 + 3 -> 2 + 4 -> 1 + 5 -> 4 + 6 -> 5
-        + 7 -> 1 + 8 -> 0
-        mostlySteps
-    } for 5 Int is sat
-    tooManyJumps : {
-        Cf.degrees = // in Ionian: C G C G C G D C
-        0 -> 0 + 1 -> 4 + 2 -> 0 + 3 -> 4 + 4 -> 0 + 5 -> 4 + 6 -> 1 + 7 -> 0
-        mostlySteps
-    } for 5 Int is unsat
-    noJumps : {
-        Cf.degrees = // in Ionian: C D E F G F E D C
-        0 -> 0 + 1 -> 1 + 2 -> 2 + 3 -> 3 + 4 -> 4 + 5 -> 3 + 6 -> 2
-        + 7 -> 1 + 8 -> 0
-        mostlySteps
-    } for 5 Int is unsat
+example noTritonesExample is {noTritones} for {
+    #Int = 5
+    `Cf0.mode = 0
+    `Cf0.degrees = // C F E B B E D C
+    0 -> 0 + 1 -> 3 + 2 -> 2 + 3 -> 6 + 4 -> -1 + 5 -> 2 + 6 -> 1 + 7 -> 0
 }
 
-test expect { // noCircling
-    marginalExample : {
-        Cf.degrees = // In Ionian: C B C B D C D C
+test suite for mostlySteps { // mostlySteps
+    example evenMeasureExample is {mostlySteps} for {
+        #Int = 5
+        `Cf0.degrees = // in Ionian: C F E F G A D C
+        0 -> 0 + 1 -> 3 + 2 -> 2 + 3 -> 3 + 4 -> 4 + 5 -> 5 + 6 -> 1 + 7 -> 0
+    }
+    example oddMeasureExample is {mostlySteps} for {
+        #Int = 5
+        `Cf0.degrees = // in Ionian: C B F E D G A D C
+        0 -> 0 + 1 -> -1 + 2 -> 3 + 3 -> 2 + 4 -> 1 + 5 -> 4 + 6 -> 5
+        + 7 -> 1 + 8 -> 0
+    }
+    example tooManyJumps is {not mostlySteps} for {
+        #Int = 5
+        `Cf0.degrees = // in Ionian: C G C G C G D C
+        0 -> 0 + 1 -> 4 + 2 -> 0 + 3 -> 4 + 4 -> 0 + 5 -> 4 + 6 -> 1 + 7 -> 0
+    }
+    example noJumps is {not mostlySteps} for {
+        #Int = 5
+        `Cf0.degrees = // in Ionian: C D E F G F E D C
+        0 -> 0 + 1 -> 1 + 2 -> 2 + 3 -> 3 + 4 -> 4 + 5 -> 3 + 6 -> 2
+        + 7 -> 1 + 8 -> 0
+    }
+}
+
+test suite for noCircling { // noCircling
+    example marginalExample is {noCircling} for {
+        #Int = 5
+        `Cf0.degrees = // In Ionian: C B C B D C D C
         0 -> 0 + 1 -> -1 + 2 -> 0 + 3 -> -1 + 4 -> 1 + 5 -> 0 + 6 -> 1 + 7 -> 0
-        noCircling
-    } for 5 Int is sat
-    upDownDownUp : {
-        Cf.degrees = // In Ionian: C G A G E G D C
+    }
+    example upDownDownUp is {not noCircling} for {
+        #Int = 5
+        `Cf0.degrees = // In Ionian: C G A G E G D C
         0 -> 0 + 1 -> 4 + 2 -> 5 + 3 -> 4 + 4 -> 2 + 5 -> 4 + 6 -> 1 + 7 -> 0
-        noCircling
-    } for 5 Int is unsat
-    upDownUpDown : {
-        Cf.degrees = // In Ionian: C G A G A G D C
+    }
+    example upDownUpDown is {not noCircling} for {
+        #Int = 5
+        `Cf0.degrees = // In Ionian: C G A G A G D C
         0 -> 0 + 1 -> 4 + 2 -> 5 + 3 -> 4 + 4 -> 5 + 5 -> 4 + 6 -> 1 + 7 -> 0
-        noCircling
-    } for 5 Int is unsat
+    }
 }
 
 test expect { // cantusFirmus

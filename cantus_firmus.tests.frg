@@ -10,6 +10,15 @@ test expect { // lastMeasure
     } for 5 Int is theorem
 }
 
+test expect { // intervalOf
+    unison : { intervalOf[6, 6] = 1 } for 5 Int is sat
+    stepUp : { intervalOf[4, 5] = 2 } for 5 Int is sat
+    stepDown : { intervalOf[4, 3] = 2 } for 5 Int is sat
+    fourth : { intervalOf[-2, 1] = 4 } for 5 Int is sat
+    octave : { intervalOf[7, 0] = 8 } for 5 Int is sat
+    doubleOctave : { intervalOf[7, -7] = 15 } for 5 Int is sat
+}
+
 test expect { // wellformed
     wellformedExample : {
         {   all i: Int | some Cf.degrees[i] iff (i >= 0 and i <= 7)

@@ -114,7 +114,6 @@ pred noTritones {
     }
 }
 
-//TODO
 // The CF also should not have repeated notes (unisons) or immediate sevenths.
 pred noBadIntervals {
     all i : Int | let j = add[i, 1] {
@@ -137,7 +136,6 @@ pred mostlySteps {
     }
 }
 
-//TODO
 // The CF should not have consecutive two skips or leaps in the same direction.
 pred noArpeggios {
     no i: Int | let j = add[i, 1], k = add[i, 2] {
@@ -146,6 +144,21 @@ pred noArpeggios {
         intervalOf[Cf.degrees[i], Cf.degrees[j]] > 2
         intervalOf[Cf.degrees[j], Cf.degrees[k]] > 2
     }
+}
+
+// Includes all the above predicates
+pred cantusFirmusLite {
+    wellformed
+    validMode
+    validLength
+    validStartEnd
+    validRange
+    penultimateDescent
+    validClimax
+    noTritones
+    noBadIntervals
+    mostlySteps
+    noArpeggios
 }
 
 // The CF should not circle around the same note for too long, as this is
@@ -159,7 +172,6 @@ pred noCircling {
     }
 }
 
-//TODO
 // The CF should also not have three consecutive skips or leaps, even in
 // alternating directions.
 pred noTripleJump { // this is not track and field
@@ -173,20 +185,15 @@ pred noTripleJump { // this is not track and field
 // This predicate combines all the other predicates to check that the cantus
 // firmus follows all the rules.
 pred cantusFirmus {
-    wellformed
-    validMode
-    validLength
-    validStartEnd
-    validRange
-    penultimateDescent
-    validClimax
-    noTritones
-    noBadIntervals
-    mostlySteps
-    noArpeggios
+    cantusFirmusLite
     noCircling
     noTripleJump
 }
+
+// Finds a cantus firmus but potentially with circling or triple jumps. These
+// CFs tend to be a little less aesthetically pleasing, indicating the
+// importance of the last two predicates!
+run { cantusFirmusLite } for 5 Int
 
 // Finds an example of a cantus firmus
 run { cantusFirmus } for 5 Int

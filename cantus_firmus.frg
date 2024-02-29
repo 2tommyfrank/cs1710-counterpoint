@@ -17,7 +17,7 @@ one sig Cf {
 }
 
 /******************************************************************************
-    Functions
+    Auxiliary functions
 ******************************************************************************/
 
 // Calculates the last measure of a CF; useful for bounding length.
@@ -222,7 +222,7 @@ run { cantusFirmus fifthAbove } for 5 Int
 // importance of the last two predicates!
 run { cantusFirmusLite } for 5 Int
 
-// This example shows off ledger lines :)
+// This example shows off ledger lines in the visualizer :)
 inst ledgerLines {
     `Cf0.mode = 0
     `Cf0.degrees = // C C B A G A D E D C

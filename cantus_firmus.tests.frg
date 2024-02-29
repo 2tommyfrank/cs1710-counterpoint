@@ -8,13 +8,13 @@ open "cantus_firmus.frg"
     Integration tests
 ******************************************************************************/
 
-test expect { // cantusFirmus
+test expect {
     // ensures that all sub-predicates are satisfiable as well
     cfSat : { cantusFirmus } for 5 Int is sat
 }
 
 /******************************************************************************
-    Function tests
+    Auxiliary function tests
 ******************************************************************************/
 
 // lastMeasure

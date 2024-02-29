@@ -13,6 +13,7 @@ one sig Cf {
     degrees: pfunc Int -> Int
 }
 
+
 // Calculates the last measure of a CF; useful for bounding length.
 fun lastMeasure: Int {
     max[{ i: Int | some Cf.degrees[i] }]
@@ -23,6 +24,14 @@ fun lastMeasure: Int {
 fun intervalOf[i, j : Int] : Int {
     add[abs[subtract[j, i]], 1]
 }
+
+// Calculates Euclidean modulo (result always positive)
+fun mod[a, p: Int]: Int {
+    let rem = remainder[a, p] {
+        rem >= 0 implies rem else add[p, rem]
+    }
+}
+
 
 // Make sure the mode is meaningful and that Cf.degrees is a sequence of notes.
 pred wellformed {
@@ -69,20 +78,12 @@ pred penultimateDescent {
     Cf.degrees[subtract[lastMeasure, 1]] = 1
 }
 
-//TODO
 // The CF should have a climax note higher than all the others; this note
 // should not be a seventh above the starting note to avoid too much tension.
 pred validClimax {
     some i: Int | all j: Int | i != j implies {
         Cf.degrees[i] > Cf.degrees[j]
         Cf.degrees[i] != 6 // no seventh climax
-    }
-}
-
-// Calculates Euclidean modulo (result always positive)
-fun mod[a, p: Int]: Int {
-    let rem = remainder[a, p] {
-        rem >= 0 implies rem else add[p, rem]
     }
 }
 
@@ -161,6 +162,7 @@ pred cantusFirmusLite {
     noArpeggios
 }
 
+
 // The CF should not circle around the same note for too long, as this is
 // too repetitive.
 pred noCircling {
@@ -190,10 +192,6 @@ pred cantusFirmus {
     noTripleJump
 }
 
-// Finds a cantus firmus but potentially with circling or triple jumps. These
-// CFs tend to be a little less aesthetically pleasing, indicating the
-// importance of the last two predicates!
-run { cantusFirmusLite } for 5 Int
 
 // Finds an example of a cantus firmus
 run { cantusFirmus } for 5 Int
@@ -203,6 +201,11 @@ run { cantusFirmus } for 5 Int
 // go at least a fifth above the starting note and still be valid.
 pred fifthAbove { some i: Int | Cf.degrees[i] >= 5 }
 run { cantusFirmus fifthAbove } for 5 Int
+
+// Finds a cantus firmus but potentially with circling or triple jumps. These
+// CFs tend to be a little less aesthetically pleasing, indicating the
+// importance of the last two predicates!
+run { cantusFirmusLite } for 5 Int
 
 // This example shows off ledger lines :)
 inst ledgerLines {

@@ -4,6 +4,11 @@ open "cantus_firmus.frg"
 // warning: may take a long time to run all tests
 // perhaps run the test suites individually
 
+test expect { // cantusFirmus
+    // ensures that all sub-predicates are satisfiable as well
+    cfSat : { cantusFirmus } for 5 Int is sat
+}
+
 test expect { // lastMeasure
     lastMeasurePresent : {
         some Cf.degrees[15] implies lastMeasure = 15
@@ -332,9 +337,4 @@ test suite for noTripleJump {
         `Cf0.degrees =
         0->0 + 1->2 + 2->4 + 3->6
     }
-}
-
-test expect { // cantusFirmus
-    // ensures that all sub-predicates are satisfiable as well
-    cfSat : { cantusFirmus } for 5 Int is sat
 }

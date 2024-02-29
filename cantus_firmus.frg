@@ -21,9 +21,6 @@ pred wellformed {
     Cf.mode >= 0
     Cf.mode <= 6
     some Cf.degrees[0]
-    // all i: Int | i != 0 implies {
-    //     some Cf.degrees[i] implies some Cf.degrees[subtract[i, 1]]
-    // }
     isSeqOf[Cf.degrees, Int]
 }
 
@@ -115,7 +112,6 @@ pred noBadIntervals {
     }
 }
 
-// test this works with even and odd measure numbers
 // Tommy
 pred mostlySteps {
     let numJumps = #{ i: Int | let j = add[i, 1] {

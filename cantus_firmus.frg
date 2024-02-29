@@ -1,5 +1,7 @@
 #lang forge/bsl
 
+option run_sterling "cf_visualizer.js"
+
 // Cantus firmus
 one sig Cf {
     mode: one Int,
@@ -34,7 +36,7 @@ pred validMode {
 
 // Ethan
 pred validLength {
-    lastMeasure >= 7
+    lastMeasure >= 10
     lastMeasure <= 15
 }
 

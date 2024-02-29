@@ -38,6 +38,15 @@ fun mod[a, p: Int]: Int {
     }
 }
 
+// Calculates whether two notes form a tritone, i.e. an augmented 4th or a
+// diminished 5th. With only white notes, the only tritone is F - B.
+pred tritone[pitch1, pitch2: Int] {
+    let F = mod[subtract[3, Cf.mode], 7], B = mod[subtract[6, Cf.mode], 7] {
+        (mod[pitch1, 7] = F and mod[pitch2, 7] = B) or
+        (mod[pitch1, 7] = B and mod[pitch2, 7] = F)
+    }
+}
+
 /******************************************************************************
     Constraints
 ******************************************************************************/
@@ -93,15 +102,6 @@ pred validClimax {
     some i: Int | all j: Int | i != j implies {
         Cf.degrees[i] > Cf.degrees[j]
         Cf.degrees[i] != 6 // no seventh climax
-    }
-}
-
-// Calculates whether two notes form a tritone, i.e. an augmented 4th or a
-// diminished 5th. With only white notes, the only tritone is F - B.
-pred tritone[pitch1, pitch2: Int] {
-    let F = mod[subtract[3, Cf.mode], 7], B = mod[subtract[6, Cf.mode], 7] {
-        (mod[pitch1, 7] = F and mod[pitch2, 7] = B) or
-        (mod[pitch1, 7] = B and mod[pitch2, 7] = F)
     }
 }
 

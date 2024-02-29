@@ -17,7 +17,8 @@ test expect { // cantusFirmus
     Function tests
 ******************************************************************************/
 
-test expect { // lastMeasure
+// lastMeasure
+test expect {
     lastMeasurePresent : {
         some Cf.degrees[15] implies lastMeasure = 15
     } for 5 Int is theorem
@@ -26,7 +27,8 @@ test expect { // lastMeasure
     } for 5 Int is theorem
 }
 
-test expect { // intervalOf
+// intervalOf
+test expect {
     unison : { intervalOf[6, 6] = 1 } for 5 Int is sat
     stepUp : { intervalOf[4, 5] = 2 } for 5 Int is sat
     stepDown : { intervalOf[4, 3] = 2 } for 5 Int is sat
@@ -35,17 +37,42 @@ test expect { // intervalOf
     doubleOctave : { intervalOf[7, -7] = 15 } for 5 Int is sat
 }
 
-test expect { // mod
+// mod
+test expect {
     mod_5_7 : { mod[5, 7] = 5 } for 5 Int is sat
     mod_12_5 : { mod[12, 5] = 2 } for 5 Int is sat
     negative : { mod[-6, 5] = 4 } for 5 Int is sat
+}
+
+// tritone
+test expect {
+    ionianTritone : {
+        Cf.mode = 0
+        tritone[3, 6]
+    } for 5 Int is sat
+    aeolianTritone : {
+        Cf.mode = 5
+        tritone[1, -2]
+    } for 5 Int is sat
+    upperOctaveTritone : {
+        Cf.mode = 0
+        tritone[10, 13]
+    } for 5 Int is sat
+    perfectFourth : {
+        Cf.mode = 0
+        not tritone[2, 5]
+    } for 5 Int is sat
+    symmetric : {
+        all i, j: Int | tritone[i, j] iff tritone[j, i]
+    } for 5 Int is theorem
 }
 
 /******************************************************************************
     Constraint tests
 ******************************************************************************/
 
-test expect { // wellformed
+// wellformed
+test expect {
     wellformedExample : {
         {   all i: Int | some Cf.degrees[i] iff (i >= 0 and i <= 7)
             Cf.mode = 0
@@ -62,12 +89,14 @@ test expect { // wellformed
     } for 5 Int is unsat
 }
 
-test expect { // validMode
+// validMode
+test expect {
     mixolydian: { validMode and Cf.mode = 4 } is sat
     invalid_mode : { validMode and Cf.mode = 3 } is unsat
 }
 
-test expect { // validLength
+// validLength
+test expect {
     too_short : {
         wellformed and validLength
         no Cf.degrees[2]
@@ -83,7 +112,8 @@ test expect { // validLength
     } for 5 Int is sat
 }
 
-test expect { // validStartEnd
+// validStartEnd
+test expect {
     endOneHigher : {
         wellformed and validStartEnd
         Cf.degrees[0] = 0
@@ -101,7 +131,8 @@ test expect { // validStartEnd
     } for 5 Int is unsat
 }
 
-test expect { // validRange
+// validRange
+test expect {
     range_too_large: {
         validRange
         Cf.degrees[0] = 0
@@ -124,7 +155,8 @@ example valid_range is {validRange} for {
     `Cf0.degrees = 0->0 + 1->1 + 2->4 + 3->3 + 4->1 + 5->0
 }
 
-test expect { // penultimateDescent
+// penultimateDescent
+test expect {
     penultimateDescentExample : {
         {   Cf.degrees[6] = 1
             Cf.degrees[7] = 0
@@ -147,7 +179,8 @@ test expect { // penultimateDescent
     } for 5 Int is unsat
 }
 
-test expect { // validClimax
+// validClimax
+test expect {
     two_climaxes : {
         validClimax
         some disj i, j: Int | {
@@ -166,29 +199,8 @@ test expect { // validClimax
     } for 5 Int is unsat
 }
 
-test expect { // tritone
-    ionianTritone : {
-        Cf.mode = 0
-        tritone[3, 6]
-    } for 5 Int is sat
-    aeolianTritone : {
-        Cf.mode = 5
-        tritone[1, -2]
-    } for 5 Int is sat
-    upperOctaveTritone : {
-        Cf.mode = 0
-        tritone[10, 13]
-    } for 5 Int is sat
-    perfectFourth : {
-        Cf.mode = 0
-        not tritone[2, 5]
-    } for 5 Int is sat
-    symmetric : {
-        all i, j: Int | tritone[i, j] iff tritone[j, i]
-    } for 5 Int is theorem
-}
-
-test expect { // noTritones
+// noTritones
+test expect {
     immediateTritone : {
         Cf.mode = 0
         wellformed
@@ -214,7 +226,8 @@ example noTritonesExample is {noTritones} for {
     0->0 + 1->3 + 2->2 + 3->6 + 4->-1 + 5->2 + 6->1 + 7->0
 }
 
-test expect { // noBadIntervals
+// noBadIntervals
+test expect {
     same_note: {
         wellformed
         noBadIntervals
@@ -249,7 +262,8 @@ example no_bad_intervals_example is {noBadIntervals} for {
     0->0 + 1->-1 + 2->0 + 3->-1 + 4->1 + 5->0 + 6->1 + 7->0
 }
 
-test suite for mostlySteps { // mostlySteps
+// mostlySteps
+test suite for mostlySteps {
     example evenMeasureExample is {mostlySteps} for {
         #Int = 5
         `Cf0.degrees = // in Ionian: C F E F G A D C
@@ -272,7 +286,8 @@ test suite for mostlySteps { // mostlySteps
     }
 }
 
-test expect { // noArpeggios
+// noArpeggios
+test expect {
     two_jumps_diff_dir: {
         wellformed
         some i : Int | {
@@ -305,7 +320,8 @@ example arpeggio_down is {not noArpeggios} for {
     0->0 + 1->-2 + 2->-4
 }
 
-test suite for noCircling { // noCircling
+// noCircling
+test suite for noCircling {
     example marginalExample is {noCircling} for {
         #Int = 5
         `Cf0.degrees = // In Ionian: C B C B D C D C
@@ -323,6 +339,7 @@ test suite for noCircling { // noCircling
     }
 }
 
+// noTripleJump
 test suite for noTripleJump {
     example all_steps is {noTripleJump} for {
         #Int = 5

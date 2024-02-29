@@ -36,7 +36,7 @@ pred validMode {
 
 // Ethan
 pred validLength {
-    lastMeasure >= 10
+    lastMeasure >= 8
     lastMeasure <= 15
 }
 

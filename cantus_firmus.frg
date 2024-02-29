@@ -1,5 +1,7 @@
 #lang forge/bsl
 
+option run_sterling "cf_visualizer.js"
+
 // Cantus firmus
 one sig Cf {
     mode: one Int,
@@ -34,7 +36,7 @@ pred validMode {
 
 // Ethan
 pred validLength {
-    lastMeasure >= 7
+    lastMeasure >= 8
     lastMeasure <= 15
 }
 
@@ -112,7 +114,6 @@ pred noBadIntervals {
     }
 }
 
-// test this works with even and odd measure numbers
 // Tommy
 pred mostlySteps {
     let numJumps = #{ i: Int | let j = add[i, 1] {
